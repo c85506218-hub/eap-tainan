@@ -568,22 +568,23 @@ const META = {
   angry:   { cls:'b-angry',   icon:'😤', label:'憤怒壓抑' },
 };
 
+// 全部為真實存在的資源，不虛構
 const RES = {
   great:[
-    {icon:'🏃',type:'健康促進',name:'正念減壓工作坊',detail:'每月線上辦理，可報名參加',tag:'tag-green',t:'預防性資源'},
-    {icon:'📖',type:'自學資源',name:'壓力管理自學手冊',detail:'FTP 公共資源區 / 人事室表格下載',tag:'tag-blue',t:'免費下載'},
+    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告，費用署方支應',tag:'tag-blue',t:'預防保健'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光心理諮商所',detail:'個別諮商每年 6 次，加官方 LINE 預約',tag:'tag-gold',t:'主動申請'},
   ],
   ok:[
-    {icon:'🧘',type:'放鬆技巧',name:'5 分鐘正念呼吸練習',detail:'音頻引導，隨時可用',tag:'tag-green',t:'即時使用'},
-    {icon:'📋',type:'自我評估',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告，費用署方支應',tag:'tag-blue',t:'消防署專案'},
+    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告，費用署方支應',tag:'tag-blue',t:'消防署專案'},
+    {icon:'📞',type:'即時支持',name:'1925 安心專線',detail:'24 小時免費，全年無休',tag:'tag-red',t:'立即可用'},
   ],
   anxious:[
     {icon:'🔥',type:'消防署專案',name:'謐時光心理諮商所',detail:'個別諮商每年 6 次，加官方 LINE 預約',tag:'tag-gold',t:'強烈建議'},
     {icon:'📞',type:'即時支持',name:'1925 安心專線',detail:'24 小時免費，全年無休',tag:'tag-red',t:'立即可用'},
   ],
   sad:[
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'平日 09:00–20:00，03-3128327',tag:'tag-purple',t:'優先推薦'},
     {icon:'🏛',type:'本局 EAP',name:'人事室心理諮商轉介',detail:'每年 4 小時，完全保密，填具申請表',tag:'tag-red',t:'需要關注'},
-    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'03-3128327，平日 09:00–20:00',tag:'tag-purple',t:'優先推薦'},
   ],
   angry:[
     {icon:'🔥',type:'優先轉介',name:'謐時光 PTSD 個別諮商',detail:'最快當日預約，加入官方 LINE',tag:'tag-red',t:'優先處理'},
@@ -626,13 +627,27 @@ async function analyze() {
   document.getElementById('emo-title').textContent = m.icon + '  ' + m.label;
   document.getElementById('emo-body').textContent = aiText || getFallback(mood, txt);
 
-  document.getElementById('suggest-res').innerHTML = '';
+  const rr = RES[mood] || [];
+  const srDiv = document.getElementById('suggest-res');
+  srDiv.innerHTML = rr.length
+    ? '<div style="font-size:13px;font-weight:700;color:#1a6b3c;margin:14px 0 10px">📌 為你推薦的資源</div>' +
+      rr.map(r => `<div class="res-card" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+          <div>
+            <div style="font-size:11px;color:#888;margin-bottom:2px">${r.icon} ${r.type}</div>
+            <div style="font-weight:700;font-size:14px">${r.name}</div>
+            <div style="font-size:12px;color:#666;margin-top:2px">${r.detail}</div>
+          </div>
+          <span class="res-tag ${r.tag}">${r.t}</span>
+        </div>
+      </div>`).join('')
+    : '';
 
   document.getElementById('result-wrap').style.display = 'block';
   document.getElementById('result-wrap').scrollIntoView({ behavior:'smooth' });
 
   // 儲存到 Google Sheets（背景執行）
-  saveToSheets(mood, stress, txt, aiText || getFallback(mood, txt), []);
+  saveToSheets(mood, stress, txt, aiText || getFallback(mood, txt), rr);
 }
 
 function reset() {
