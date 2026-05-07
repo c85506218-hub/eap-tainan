@@ -568,6 +568,27 @@ const META = {
   angry:   { cls:'b-angry',   icon:'😤', label:'憤怒壓抑' },
 };
 
+// 主題關鍵字 → 對應真實資源（優先顯示）
+const TOPIC_KEYWORDS = {
+  legal:   /法律|訴訟|告訴|離婚|繼承|契約|債務|欠錢|法院|律師|法扶|糾紛|侵權/,
+  care:    /長照|照顧|失能|失智|老人|父母|長輩|看護|安養|照服員/,
+  finance: /借錢|卡債|貸款|財務|欠款|還款|利息|負債|繳不起/,
+};
+const TOPIC_RES = {
+  legal:[
+    {icon:'⚖️',type:'法律諮詢',name:'法律扶助基金會',detail:'免費法律諮詢，撥打 0800-314-4（週一至六）',tag:'tag-blue',t:'免費服務'},
+    {icon:'🏛',type:'臺南市 EAP',name:'EAP 法律諮詢服務',detail:'員工協助方案含法律諮詢，至 EAP 網申請',tag:'tag-green',t:'員工專屬'},
+  ],
+  care:[
+    {icon:'👴',type:'長照服務',name:'1966 長照專線',detail:'長照資源諮詢，週一至五 08:30–17:30',tag:'tag-gold',t:'直接撥打'},
+    {icon:'👪',type:'照顧者支持',name:'0800-507272 家庭關懷專線',detail:'家庭照顧者心理支持，週一至五 09:00–18:00',tag:'tag-green',t:'直接撥打'},
+  ],
+  finance:[
+    {icon:'🤝',type:'福利諮詢',name:'1957 福利諮詢專線',detail:'社會救助與福利，每日 08:00–22:00',tag:'tag-green',t:'直接撥打'},
+    {icon:'🏛',type:'臺南市 EAP',name:'EAP 財務諮詢服務',detail:'員工協助方案含財務諮詢，至 EAP 網申請',tag:'tag-blue',t:'員工專屬'},
+  ],
+};
+
 // 全部為真實存在的資源，不虛構
 const RES = {
   great:[
@@ -627,7 +648,19 @@ async function analyze() {
   document.getElementById('emo-title').textContent = m.icon + '  ' + m.label;
   document.getElementById('emo-body').textContent = aiText || getFallback(mood, txt);
 
-  const rr = RES[mood] || [];
+  // 先偵測主題關鍵字，有命中就優先插入對應資源
+  const topicRes = [];
+  Object.entries(TOPIC_KEYWORDS).forEach(([topic, rx]) => {
+    if (txt && rx.test(txt)) topicRes.push(...(TOPIC_RES[topic] || []));
+  });
+  const moodRes = RES[mood] || [];
+  // 主題資源優先，再補情緒資源，去重，最多 3 筆
+  const seen = new Set();
+  const rr = [...topicRes, ...moodRes].filter(r => {
+    if (seen.has(r.name)) return false;
+    seen.add(r.name); return true;
+  }).slice(0, 3);
+
   const srDiv = document.getElementById('suggest-res');
   srDiv.innerHTML = rr.length
     ? '<div style="font-size:13px;font-weight:700;color:#1a6b3c;margin:14px 0 10px">📌 為你推薦的資源</div>' +
