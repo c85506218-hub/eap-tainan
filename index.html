@@ -509,19 +509,17 @@ async function callGemini(mood, txt, stress) {
   const key = cfg.geminiKey;
   if (!key) return '';
   const isField = txt && FIELD_KEYWORDS.test(txt);
-  const contextLine = isField
-    ? '2. 結合消防執勤／救災情境給一句具體的體察'
-    : '2. 給一句貼近職場或生活情境的具體體察';
-  const prompt = `你是臺南市政府消防局 EAP 心理健康支持平台的 AI 助理，服務對象是消防局員工（含內勤與外勤）。
-員工情緒自評：${META[mood].label}
-壓力程度（1-10）：${stress}
-${txt ? '員工描述：' + txt : '（員工未填寫文字描述）'}
+  const fieldNote = isField ? '\n員工提到消防執勤情境，請結合這個背景表達具體的理解。' : '';
+  const hasTxt = txt && txt.trim().length > 0;
+  const prompt = `你是臺南市政府消防局 EAP 心理健康支持平台的 AI 諮詢助理，服務消防局員工（含內勤與外勤）。
 
-請用繁體中文，以溫暖、不說教的語氣，給出 2-3 句簡短回應（不超過 80 字）：
-1. 肯定這個情緒是正常且值得被重視的
-${contextLine}
-3. 溫和鼓勵使用 EAP 或謐時光資源
-只輸出回應文字，不要加標題或編號。`;
+員工自評情緒：${META[mood].label}　壓力指數：${stress}/10
+${hasTxt ? `員工說：「${txt}」` : '（員工未填寫描述）'}${fieldNote}
+
+請用繁體中文、溫暖不說教的語氣寫 2–3 句個別化回應（120 字以內）。
+${hasTxt ? '重點：直接針對員工說的具體內容回應，讓他感到被真正理解，不要套公式或泛泛安慰。' : '根據情緒與壓力程度給予溫暖支持。'}
+結尾可以（非必須）簡短提到尋求支持，但不要只用「可以使用 EAP」作結。
+只輸出回應文字，不要加標題、編號或引號。`;
   try {
     const r = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
@@ -530,7 +528,7 @@ ${contextLine}
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.75, maxOutputTokens: 300 }
+          generationConfig: { temperature: 0.85, maxOutputTokens: 400 }
         })
       }
     );
