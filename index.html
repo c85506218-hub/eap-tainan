@@ -520,16 +520,13 @@ const FIELD_KEYWORDS = /執勤|出勤|救災|火場|搶救|勤務|夜班|備勤|
 
 async function callGemini(mood, txt, stress) {
   try {
-    const r = await fetch(GAS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'analyze',
-        mood,
-        stress: parseInt(stress),
-        userInput: txt || '',
-      })
+    const params = new URLSearchParams({
+      action: 'analyze',
+      mood,
+      stress: parseInt(stress),
+      userInput: txt || ''
     });
+    const r = await fetch(`${GAS_URL}?${params}`);
     const d = await r.json();
     if (!r.ok) return '';
     return d.text || '';
@@ -566,7 +563,7 @@ const META = {
 
 // 主題關鍵字 → 對應真實資源（優先顯示）
 const TOPIC_KEYWORDS = {
-  legal:   /法律|訴訟|告訴|離婚|繼承|契約|債務|欠錢|法院|律師|法扶|糾紛|侵權|被告|起訴|調解|仲裁|官司|打官司|法律問題|民事|刑事|罰款/,
+  legal:   /法律|訴訟|告訴|離婚|繼承|契約|債務|欠錢|法院|律師|法扶|糾紛|侵權|被告|起訴|調解|仲裁|官司|打官司|法律問題|民事|刑事|罰款|霸凌|職場霸凌|騷擾|歧視|申訴|投訴/,
   care:    /長照|照顧|失能|失智|老人|父母|長輩|看護|安養|照服員/,
   finance: /借錢|卡債|貸款|財務|欠款|還款|利息|負債|繳不起/,
 };
