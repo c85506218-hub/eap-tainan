@@ -439,16 +439,6 @@ tr:last-child td{border-bottom:none}
     <div class="hero-desc">所有數據已去識別化處理，無法追溯個別員工身份 · 數據來源：Google 試算表即時同步</div>
   </div>
 
-  <!-- Gemini API 金鑰設定 -->
-  <div class="hr-settings">
-    <div class="hr-settings-title">⚙️ Gemini AI 設定</div>
-    <div class="hr-settings-row">
-      <input type="password" id="hr-gemini-key" placeholder="貼上 Google AI Studio 金鑰（AIza...）">
-      <button class="hr-settings-btn" onclick="saveGeminiKey()">儲存</button>
-    </div>
-    <div class="hr-settings-hint" id="hr-key-status">尚未設定金鑰 · 員工使用時將顯示預設回應文字</div>
-  </div>
-
   <!-- KPI -->
   <div class="dash-kpi">
     <div class="kpi"><div class="kpi-num" id="kpi-total">—</div><div class="kpi-lbl">總使用次數</div></div>
@@ -493,11 +483,7 @@ tr:last-child td{border-bottom:none}
 
 <script>
 // ── 設定 ──
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzxBPnmPRxdnR99HU6i7gqhBeAJKNRFhw4iEIZalFLbwzizu0j61wXUtRiPGvrHsVqYSQ/exec';
-const cfg = {
-  get geminiKey() { return localStorage.getItem('eap_gemini_key') || 'AIzaSyAoyf-pwmetK6Px8x9rtUP3HQ9Qf-a4sOo'; },
-  set geminiKey(v) { localStorage.setItem('eap_gemini_key', v); },
-};
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzYbxTwilDz7d6w_54WsblB3wGM56OlV30R_ID1q1xbqS0q8i9daptL8HUvDw1b2WcAcw/exec';
 
 let mood = null;
 const HR_PASSWORD = 'cl3';
@@ -506,35 +492,20 @@ const HR_PASSWORD = 'cl3';
 const FIELD_KEYWORDS = /執勤|出勤|救災|火場|搶救|勤務|夜班|備勤|緊急救護|消防|火災|意外|現場|傷亡|燒|爆|災/;
 
 async function callGemini(mood, txt, stress) {
-  const key = cfg.geminiKey;
-  if (!key) return '';
-  const isField = txt && FIELD_KEYWORDS.test(txt);
-  const fieldNote = isField ? '\n員工提到消防執勤情境，請結合這個背景表達具體的理解。' : '';
-  const hasTxt = txt && txt.trim().length > 0;
-  const prompt = `你是臺南市政府消防局 EAP 心理健康支持平台的 AI 諮詢助理，服務消防局員工（含內勤與外勤）。
-
-員工自評情緒：${META[mood].label}　壓力指數：${stress}/10
-${hasTxt ? `員工說：「${txt}」` : '（員工未填寫描述）'}${fieldNote}
-
-請用繁體中文、溫暖不說教的語氣寫 2–3 句個別化回應（120 字以內）。
-${hasTxt ? '重點：直接針對員工說的具體內容回應，讓他感到被真正理解，不要套公式或泛泛安慰。' : '根據情緒與壓力程度給予溫暖支持。'}
-結尾可以（非必須）簡短提到尋求支持，但不要只用「可以使用 EAP」作結。
-只輸出回應文字，不要加標題、編號或引號。`;
   try {
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.85, maxOutputTokens: 400 }
-        })
-      }
-    );
+    const r = await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'analyze',
+        mood,
+        stress: parseInt(stress),
+        userInput: txt || '',
+      })
+    });
     const d = await r.json();
     if (!r.ok) return '';
-    return d.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    return d.text || '';
   } catch (e) { return ''; }
 }
 
@@ -716,14 +687,6 @@ function hrLogin() {
     inp.value = '';
     setTimeout(() => inp.classList.remove('err'), 400);
   }
-}
-
-function saveGeminiKey() {
-  const k = document.getElementById('hr-gemini-key').value.trim();
-  cfg.geminiKey = k;
-  document.getElementById('hr-key-status').textContent = k
-    ? '✅ 金鑰已儲存（' + k.slice(0,8) + '...）· 員工使用時將呼叫 Gemini AI'
-    : '⚠ 已清除金鑰';
 }
 
 function goPage(p, btn) {
