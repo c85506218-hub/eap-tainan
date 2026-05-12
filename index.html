@@ -632,7 +632,7 @@ async function analyze() {
 
   const srDiv = document.getElementById('suggest-res');
   srDiv.innerHTML = rr.length
-    ? '<div style="font-size:13px;font-weight:700;color:#1a6b3c;margin:14px 0 10px">📌 為你推薦的資源</div>' +
+    ? '<div style="font-size:13px;font-weight:700;color:#1a6b3c;margin:14px 0 10px">💡 AI 推薦資源</div>' +
       rr.map(r => `<div class="res-card" style="margin-bottom:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
           <div>
@@ -646,7 +646,7 @@ async function analyze() {
     : '';
 
   document.getElementById('result-wrap').style.display = 'block';
-  document.getElementById('result-wrap').scrollIntoView({ behavior:'smooth' });
+  (rr.length ? srDiv : document.getElementById('result-wrap')).scrollIntoView({ behavior:'smooth', block:'start' });
 
   // 儲存到 Google Sheets（背景執行）
   saveToSheets(mood, stress, txt, aiText || getFallback(mood, txt), rr);
