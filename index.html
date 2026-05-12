@@ -413,6 +413,39 @@ tr:last-child td{border-bottom:none}
   </div>
 
   <div class="card">
+    <div class="card-hd" style="color:var(--blue)">⚖️ 法律諮詢資源</div>
+    <div style="font-size:13px;color:var(--gray-mid);line-height:1.8;margin-bottom:14px">
+      EAP 員工協助方案含<strong>免費法律諮詢</strong>服務。如遇法律糾紛、離婚、繼承、債務等問題，可透過以下管道尋求協助。
+    </div>
+    <div class="res-grid" style="margin-bottom:12px">
+      <div class="res-card" style="cursor:default">
+        <div class="res-type">🏛 員工專屬</div>
+        <div class="res-name">EAP 法律諮詢服務</div>
+        <div class="res-detail">員工協助方案含法律諮詢，透過本局人事室申請轉介，費用全免</div>
+        <span class="res-tag tag-green">透過人事室申請</span>
+      </div>
+      <a class="res-card" href="https://www.laf.org.tw/" target="_blank">
+        <div class="res-type">⚖️ 免費法律援助</div>
+        <div class="res-name">法律扶助基金會</div>
+        <div class="res-detail">免費法律諮詢與訴訟扶助<br>📞 412-8518（各地直撥）</div>
+        <span class="res-tag tag-blue">前往網站 ↗</span>
+      </a>
+      <div class="res-card" style="cursor:default">
+        <div class="res-type">🏙 臺南市政府</div>
+        <div class="res-name">法制局免費法律諮詢</div>
+        <div class="res-detail">每週固定時段，免費面談諮詢<br>📞 06-2991111 轉法制局</div>
+        <span class="res-tag tag-blue">需預約</span>
+      </div>
+      <div class="res-card" style="cursor:default">
+        <div class="res-type">📱 即時諮詢</div>
+        <div class="res-name">法律諮詢專線 0800-314-4</div>
+        <div class="res-detail">法律扶助基金會免付費專線<br>週一至五 09:00–17:00</div>
+        <span class="res-tag tag-blue">直接撥打</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
     <div class="card-hd">📞 緊急與外部資源</div>
     <div class="res-grid">
       <div class="res-card" style="cursor:default"><div class="res-type">🆘 24 小時</div><div class="res-name">1925 安心專線</div><div class="res-detail">全年無休免費心理諮詢</div><span class="res-tag tag-red">直接撥打</span></div>
@@ -539,14 +572,15 @@ const META = {
 
 // 主題關鍵字 → 對應真實資源（優先顯示）
 const TOPIC_KEYWORDS = {
-  legal:   /法律|訴訟|告訴|離婚|繼承|契約|債務|欠錢|法院|律師|法扶|糾紛|侵權/,
+  legal:   /法律|訴訟|告訴|離婚|繼承|契約|債務|欠錢|法院|律師|法扶|糾紛|侵權|被告|起訴|調解|仲裁|官司|打官司|法律問題|民事|刑事|罰款/,
   care:    /長照|照顧|失能|失智|老人|父母|長輩|看護|安養|照服員/,
   finance: /借錢|卡債|貸款|財務|欠款|還款|利息|負債|繳不起/,
 };
 const TOPIC_RES = {
   legal:[
-    {icon:'⚖️',type:'法律諮詢',name:'法律扶助基金會',detail:'免費法律諮詢，撥打 0800-314-4（週一至六）',tag:'tag-blue',t:'免費服務'},
-    {icon:'🏛',type:'臺南市 EAP',name:'EAP 法律諮詢服務',detail:'員工協助方案含法律諮詢，至 EAP 網申請',tag:'tag-green',t:'員工專屬'},
+    {icon:'🏛',type:'員工專屬',name:'EAP 法律諮詢服務',detail:'員工協助方案含免費法律諮詢，透過人事室申請',tag:'tag-green',t:'員工專屬'},
+    {icon:'⚖️',type:'免費法律援助',name:'法律扶助基金會',detail:'免費法律諮詢與訴訟扶助，412-8518 各地直撥',tag:'tag-blue',t:'免費服務'},
+    {icon:'🏙',type:'臺南市政府',name:'法制局免費法律諮詢',detail:'每週固定時段面談，06-2991111 轉法制局',tag:'tag-blue',t:'需預約'},
   ],
   care:[
     {icon:'👴',type:'長照服務',name:'1966 長照專線',detail:'長照資源諮詢，週一至五 08:30–17:30',tag:'tag-gold',t:'直接撥打'},
