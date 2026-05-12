@@ -418,30 +418,24 @@ tr:last-child td{border-bottom:none}
       EAP 員工協助方案含<strong>免費法律諮詢</strong>服務。如遇法律糾紛、離婚、繼承、債務等問題，可透過以下管道尋求協助。
     </div>
     <div class="res-grid" style="margin-bottom:12px">
-      <div class="res-card" style="cursor:default">
+      <a class="res-card" href="https://personnel.tainan.gov.tw/eap/page224.aspx" target="_blank">
         <div class="res-type">🏛 員工專屬</div>
         <div class="res-name">EAP 法律諮詢服務</div>
-        <div class="res-detail">員工協助方案含法律諮詢，透過本局人事室申請轉介，費用全免</div>
-        <span class="res-tag tag-green">透過人事室申請</span>
-      </div>
-      <a class="res-card" href="https://www.laf.org.tw/" target="_blank">
+        <div class="res-detail">員工協助方案含免費法律諮詢，費用全免</div>
+        <span class="res-tag tag-green">前往申請 ↗</span>
+      </a>
+      <div class="res-card" style="cursor:default">
         <div class="res-type">⚖️ 免費法律援助</div>
         <div class="res-name">法律扶助基金會</div>
-        <div class="res-detail">免費法律諮詢與訴訟扶助<br>📞 412-8518 轉 2（手機請加 02）</div>
-        <span class="res-tag tag-blue">前往網站 ↗</span>
-      </a>
+        <div class="res-detail">📞 412-8518，免費訴訟扶助</div>
+        <span class="res-tag tag-blue">直接撥打</span>
+      </div>
       <a class="res-card" href="https://tnni.tainan.gov.tw/index.php?lang=cht&temp=law" target="_blank">
         <div class="res-type">🏙 臺南市政府</div>
         <div class="res-name">臺南市免費法律諮詢</div>
         <div class="res-detail">臺南市政府官方法律諮詢服務，含預約方式、時段與地點</div>
         <span class="res-tag tag-blue">前往預約 ↗</span>
       </a>
-      <div class="res-card" style="cursor:default">
-        <div class="res-type">📱 即時諮詢</div>
-        <div class="res-name">法律諮詢專線 0800-314-4</div>
-        <div class="res-detail">法律扶助基金會免付費專線<br>週一至五 09:00–17:00</div>
-        <span class="res-tag tag-blue">直接撥打</span>
-      </div>
     </div>
   </div>
 
@@ -578,9 +572,9 @@ const TOPIC_KEYWORDS = {
 };
 const TOPIC_RES = {
   legal:[
-    {icon:'🏛',type:'員工專屬',name:'EAP 法律諮詢服務',detail:'員工協助方案含免費法律諮詢，透過人事室申請',tag:'tag-green',t:'員工專屬'},
-    {icon:'⚖️',type:'免費法律援助',name:'法律扶助基金會',detail:'免費法律諮詢與訴訟扶助，412-8518 轉 2（手機加 02）',tag:'tag-blue',t:'免費服務'},
-    {icon:'🏙',type:'臺南市政府',name:'臺南市免費法律諮詢',detail:'官方法律諮詢服務，含預約時段與地點',tag:'tag-blue',url:'https://tnni.tainan.gov.tw/index.php?lang=cht&temp=law',t:'前往預約'},
+    {icon:'🏛',type:'員工專屬',name:'EAP 法律諮詢服務',detail:'員工協助方案含免費法律諮詢，費用全免',tag:'tag-green',t:'員工專屬'},
+    {icon:'⚖️',type:'免費法律援助',name:'法律扶助基金會',detail:'412-8518，免費訴訟扶助',tag:'tag-blue',t:'直接撥打'},
+    {icon:'🏙',type:'臺南市政府',name:'臺南市免費法律諮詢',detail:'官方法律諮詢服務，含預約時段與地點',tag:'tag-blue',t:'前往預約'},
   ],
   care:[
     {icon:'👴',type:'長照服務',name:'1966 長照專線',detail:'長照資源諮詢，週一至五 08:30–17:30',tag:'tag-gold',t:'直接撥打'},
