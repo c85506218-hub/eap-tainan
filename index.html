@@ -227,11 +227,11 @@ tr:last-child td{border-bottom:none}
   <div class="hero">
     <div class="hero-title">心理健康情緒評估</div>
     <div class="hero-desc">
-      114–115 年度員工協助方案（EAP）。本表單完全匿名，AI 分析結果僅顯示給您本人，不回傳至主管或人事室。<br>
+      114–115 年度員工協助方案（EAP）。不需登入，也不會蒐集姓名或單位。填答內容會匿名保存，供人事室做整體統計與資源規劃，不會個別揭露，也不會轉知你的主管。<br>
       填寫後將依您的情緒狀態，自動推薦最適合的本局 EAP 與消防署資源。
     </div>
     <div class="badge-row">
-      <span class="badge badge-green">🔒 資料保密，不留存個資</span>
+      <span class="badge badge-green">🔒 匿名填答，不蒐集姓名單位</span>
       <span class="badge badge-gold">🚒 消防署 PTSD 專案可用</span>
       <span class="badge badge-blue">💬 AI 情緒分析</span>
     </div>
@@ -528,9 +528,9 @@ async function callGemini(mood, txt, stress) {
     });
     const r = await fetch(`${GAS_URL}?${params}`);
     const d = await r.json();
-    if (!r.ok) return '';
-    return d.text || '';
-  } catch (e) { return ''; }
+    if (!r.ok) return { text: '', picks: [] };
+    return { text: d.text || '', picks: Array.isArray(d.picks) ? d.picks : [] };
+  } catch (e) { return { text: '', picks: [] }; }
 }
 
 // ── 儲存到 Google Sheets ──
@@ -584,25 +584,30 @@ const TOPIC_RES = {
 };
 
 // 全部為真實存在的資源，不虛構
+// 規則式邏輯不會主動挑這些，但 AI 推薦時可以選（皆依消防署官方文件）
+const EXTRA_RES = [
+  {icon:'👥',type:'消防署專案',name:'謐時光減壓團體',detail:'每場 1.5 小時，3–10 人，每團至多 2 次，費用署方支應',tag:'tag-blue',t:'單位可申請',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+];
+
 const RES = {
   great:[
-    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告，費用署方支應',tag:'tag-blue',t:'預防保健',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
-    {icon:'🔥',type:'消防署專案',name:'謐時光心理諮商所',detail:'個別諮商每年 6 次，加官方 LINE 預約',tag:'tag-gold',t:'主動申請',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告與建議，費用署方支應',tag:'tag-blue',t:'預防保健',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-gold',t:'主動申請',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
   ],
   ok:[
-    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告，費用署方支應',tag:'tag-blue',t:'消防署專案',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告與建議，費用署方支應',tag:'tag-blue',t:'消防署專案',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
     {icon:'📞',type:'即時支持',name:'1925 安心專線',detail:'24 小時免費，全年無休',tag:'tag-red',t:'立即可用'},
   ],
   anxious:[
-    {icon:'🔥',type:'消防署專案',name:'謐時光心理諮商所',detail:'個別諮商每年 6 次，加官方 LINE 預約',tag:'tag-gold',t:'強烈建議',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-gold',t:'強烈建議',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
     {icon:'📞',type:'即時支持',name:'1925 安心專線',detail:'24 小時免費，全年無休',tag:'tag-red',t:'立即可用'},
   ],
   sad:[
-    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'平日 09:00–20:00，03-3128327',tag:'tag-purple',t:'優先推薦',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-purple',t:'優先推薦',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
     {icon:'🏛',type:'本局 EAP',name:'人事室心理諮商轉介',detail:'每年 4 小時，完全保密，填具申請表',tag:'tag-red',t:'前往申請',url:'https://personnel.tainan.gov.tw/eap/index.aspx'},
   ],
   angry:[
-    {icon:'🔥',type:'優先轉介',name:'謐時光 PTSD 個別諮商',detail:'最快當日預約，加入官方 LINE',tag:'tag-red',t:'優先處理',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-red',t:'優先推薦',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
     {icon:'📞',type:'外部資源',name:'張老師 1980',detail:'情緒輔導，週一至六，免費',tag:'tag-gold',t:'立即可用'},
   ],
 };
@@ -633,7 +638,8 @@ async function analyze() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('result-wrap').style.display = 'none';
 
-  const aiText = await callGemini(mood, txt, stress);
+  const ai = await callGemini(mood, txt, stress);
+  const aiText = ai.text;
 
   document.getElementById('loading').style.display = 'none';
   const m = META[mood];
@@ -642,22 +648,42 @@ async function analyze() {
   document.getElementById('emo-title').textContent = m.icon + '  ' + m.label;
   document.getElementById('emo-body').textContent = aiText || getFallback(mood, txt);
 
-  // 先偵測主題關鍵字，有命中就優先插入對應資源
-  const topicRes = [];
-  Object.entries(TOPIC_KEYWORDS).forEach(([topic, rx]) => {
-    if (txt && rx.test(txt)) topicRes.push(...(TOPIC_RES[topic] || []));
-  });
-  const moodRes = RES[mood] || [];
-  // 主題資源優先，再補情緒資源，去重，最多 3 筆
+  // 全部資源的名稱索引（AI 只能從這裡面挑）
+  const ALL_RES = {};
+  [...EXTRA_RES, ...Object.values(TOPIC_RES).flat(), ...Object.values(RES).flat()]
+    .forEach(r => { if (!ALL_RES[r.name]) ALL_RES[r.name] = r; });
+
+  // AI 推薦：只接受白名單內的名稱，其餘丟棄
+  const aiPicks = (ai.picks || []).map(n => ALL_RES[String(n).trim()]).filter(Boolean);
+  const byAI = aiPicks.length > 0;
+
+  // 主體清單：AI 有給就用 AI 的，否則退回原本的關鍵字比對
+  let base;
+  if (byAI) {
+    base = aiPicks;
+  } else {
+    const topicRes = [];
+    Object.entries(TOPIC_KEYWORDS).forEach(([topic, rx]) => {
+      if (txt && rx.test(txt)) topicRes.push(...(TOPIC_RES[topic] || []));
+    });
+    base = [...topicRes, ...(RES[mood] || [])];
+  }
+
+  // 危機關鍵字 → 24 小時專線「置頂補上」，不取代原本的推薦。這道規則不依賴模型判斷
+  const CRISIS = /自殺|不想活|活不下去|撐不下去|不如死|結束生命|傷害自己|自我了結|死了算了|一了百了|沒有明天/;
+  if (txt && CRISIS.test(txt) && ALL_RES['1925 安心專線']) {
+    base = [ALL_RES['1925 安心專線'], ...base];
+  }
+
   const seen = new Set();
-  const rr = [...topicRes, ...moodRes].filter(r => {
+  const rr = base.filter(r => {
     if (seen.has(r.name)) return false;
     seen.add(r.name); return true;
   }).slice(0, 3);
 
   const srDiv = document.getElementById('suggest-res');
   srDiv.innerHTML = rr.length
-    ? '<div style="font-size:13px;font-weight:700;color:#1a6b3c;margin:14px 0 10px">💡 AI 推薦資源</div>' +
+    ? `<div style="font-size:13px;font-weight:700;color:#1a6b3c;margin:14px 0 10px">💡 ${byAI ? 'AI 推薦資源' : '建議資源'}</div>` +
       rr.map(r => {
         const tag = r.url
           ? `<a href="${r.url}" target="_blank" class="res-card" style="margin-bottom:10px;display:block;text-decoration:none;color:inherit">`
