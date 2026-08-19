@@ -184,13 +184,32 @@ async function loadData() {
 }
 document.getElementById('refresh-btn').addEventListener('click', loadData);
 
+// 把月份 key 統一成 YYYY-MM（本地時間）
+// GAS 若直接把 Date 當物件 key，會變成 "Fri May 01 2026 00:00:00 GMT+0800 (台北標準時間)"
+function monthKey(raw){
+  const s=String(raw); const m=s.match(/^(\d{4})-(\d{2})/);
+  if(m) return m[1]+'-'+m[2];
+  const d=new Date(s);
+  return isNaN(d.getTime()) ? null : d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+}
+function normalizeMonthly(md){
+  const out={};
+  for(const [k,v] of Object.entries(md||{})){
+    const key=monthKey(k); if(!key) continue;
+    out[key]=(out[key]||0)+(Number(v)||0);
+  }
+  return out;
+}
+
 function render(data) {
   const { emotionCounts={}, monthlyData={}, resourceCounts={}, total=0 } = data;
   document.getElementById('stat-total').textContent = total;
   const topEmo = Object.entries(emotionCounts).sort((a,b)=>b[1]-a[1])[0];
   document.getElementById('stat-top-emotion').textContent = topEmo ? topEmo[0] : '—';
-  const currentMonth = new Date().toISOString().slice(0,7);
-  document.getElementById('stat-this-month').textContent = monthlyData[currentMonth] || 0;
+  const monthly = normalizeMonthly(monthlyData);
+  const now = new Date();
+  const currentMonth = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('stat-this-month').textContent = monthly[currentMonth] || 0;
   document.getElementById('stat-emotion-types').textContent = Object.keys(emotionCounts).length;
   renderPie(emotionCounts);
   renderLine(monthlyData);
@@ -223,11 +242,15 @@ function renderPie(counts) {
   });
 }
 
-function renderLine(monthlyData) {
+function renderLine(rawMonthly) {
+  const monthlyData = normalizeMonthly(rawMonthly);
   let entries = Object.entries(monthlyData).sort((a,b)=>a[0].localeCompare(b[0]));
   if (entries.length > 1) {
-    const filled=[]; const cur=new Date(entries[0][0]+'-01'); const end=new Date(entries[entries.length-1][0]+'-01');
-    while(cur<=end){ const k=cur.toISOString().slice(0,7); filled.push([k,monthlyData[k]||0]); cur.setMonth(cur.getMonth()+1); }
+    const filled=[];
+    const [sy,sm]=entries[0][0].split('-').map(Number);
+    const [ey,em]=entries[entries.length-1][0].split('-').map(Number);
+    const cur=new Date(sy,sm-1,1); const end=new Date(ey,em-1,1);
+    while(cur<=end){ const k=cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0'); filled.push([k,monthlyData[k]||0]); cur.setMonth(cur.getMonth()+1); }
     entries=filled;
   }
   if (lineChart) lineChart.destroy();
