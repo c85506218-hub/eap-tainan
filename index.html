@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>臺南市政府消防局 EAP 心理健康支持平台</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root{
   --green:#1a6b3c;--green-mid:#2d9554;--green-light:#e8f5ee;--green-border:#b8dfc8;
@@ -134,9 +133,6 @@ textarea:focus{border-color:var(--green)}
 
 /* ── DASHBOARD ── */
 .dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.kpi{background:var(--white);border-radius:var(--r);padding:16px 14px;border:1px solid var(--gray-border);text-align:center}
-.kpi-num{font-size:26px;font-weight:700;color:var(--green)}
-.kpi-lbl{font-size:11px;color:var(--gray-mid);margin-top:3px}
 .chart-card{background:var(--white);border-radius:var(--r);padding:18px;border:1px solid var(--gray-border);margin-bottom:14px}
 .chart-title{font-size:13px;font-weight:700;color:var(--gray);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
 .charts-2col{display:grid;grid-template-columns:1fr 1.6fr;gap:14px;margin-bottom:14px}
@@ -145,10 +141,6 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th{background:var(--gray-light);padding:9px 13px;text-align:left;font-weight:700;color:var(--gray-mid);border-bottom:1px solid var(--gray-border)}
 td{padding:9px 13px;border-bottom:1px solid #f0f0ee;color:var(--gray)}
 tr:last-child td{border-bottom:none}
-.sbadge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
-.s-hi{background:var(--red-light);color:var(--red)}
-.s-md{background:var(--gold-light);color:var(--gold)}
-.s-lo{background:var(--green-light);color:var(--green)}
 .alert-box{background:#fff8e6;border:1.5px solid var(--gold-border);border-radius:10px;padding:14px 16px;margin-bottom:14px;font-size:13px;color:#5a3c00;line-height:1.7}
 .alert-box strong{font-weight:700}
 
@@ -161,13 +153,7 @@ tr:last-child td{border-bottom:none}
 .hr-settings-btn{padding:8px 16px;background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;white-space:nowrap}
 .hr-settings-btn:hover{background:#155288}
 .hr-settings-hint{font-size:11px;color:var(--blue);opacity:.7;margin-top:6px}
-.hr-refresh{font-size:12px;color:var(--gray-mid);cursor:pointer;padding:4px 10px;border:1px solid var(--gray-border);border-radius:6px;background:none;font-family:inherit}
-.hr-refresh:hover{border-color:#aaa}
 .dash-loading{text-align:center;padding:40px;color:var(--gray-mid);font-size:13px}
-
-/* ── HR 密碼 OVERLAY ── */
-.hr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center}
-.hr-overlay.show{display:flex}
 .hr-modal{background:var(--white);border-radius:var(--r);padding:32px 28px;width:320px;text-align:center;border:1px solid var(--gray-border)}
 .hr-modal-title{font-size:16px;font-weight:700;color:var(--blue);margin-bottom:6px}
 .hr-modal-sub{font-size:12px;color:var(--gray-mid);margin-bottom:20px;line-height:1.6}
@@ -179,7 +165,6 @@ tr:last-child td{border-bottom:none}
 .hr-modal-btn:hover{background:#155288}
 .hr-modal-cancel{margin-top:8px;background:none;border:none;font-size:12px;color:var(--gray-mid);cursor:pointer;font-family:inherit;padding:4px}
 .hr-modal-cancel:hover{color:var(--gray)}
-.hr-err-msg{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
 
 /* ── FOOTER ── */
 .footer{font-size:11px;color:#bbb;text-align:center;padding:20px 0 10px;line-height:1.8}
@@ -210,17 +195,7 @@ tr:last-child td{border-bottom:none}
 </nav>
 
 <!-- HR 密碼 OVERLAY -->
-<div class="hr-overlay" id="hr-overlay">
-  <div class="hr-modal">
-    <div class="hr-modal-title">🔒 HR 後台登入</div>
-    <div class="hr-modal-sub">此區域僅限 EAP 承辦人使用<br>請輸入管理密碼</div>
-    <input type="password" id="hr-pw" placeholder="••••••" maxlength="20"
-           onkeydown="if(event.key==='Enter')hrLogin()">
-    <div class="hr-err-msg" id="hr-err"></div>
-    <button class="hr-modal-btn" onclick="hrLogin()">進入後台</button>
-    <br><button class="hr-modal-cancel" onclick="closeHrLogin()">取消</button>
-  </div>
-</div>
+
 
 <!-- ═══════════════ 員工自助頁 ═══════════════ -->
 <div class="page active" id="page-employee">
@@ -460,60 +435,13 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <!-- ═══════════════ HR 後台（真實數據）═══════════════ -->
-<div class="page" id="page-hr">
-  <div class="hero">
-    <div class="hero-title" style="color:var(--blue)">HR 管理後台 — 匿名統計儀表板</div>
-    <div class="hero-desc">所有數據已去識別化處理，無法追溯個別員工身份 · 數據來源：Google 試算表即時同步</div>
-  </div>
 
-  <!-- KPI -->
-  <div class="dash-kpi">
-    <div class="kpi"><div class="kpi-num" id="kpi-total">—</div><div class="kpi-lbl">總使用次數</div></div>
-    <div class="kpi"><div class="kpi-num" id="kpi-top" style="font-size:15px;line-height:1.3">—</div><div class="kpi-lbl">最常見情緒</div></div>
-    <div class="kpi"><div class="kpi-num" id="kpi-month">—</div><div class="kpi-lbl">本月次數</div></div>
-    <div class="kpi"><div class="kpi-num" id="kpi-avg-stress" style="color:var(--gold)">—</div><div class="kpi-lbl">平均壓力指數</div></div>
-  </div>
-
-  <!-- 警示區 -->
-  <div class="alert-box" id="hr-alert" style="display:none"></div>
-
-  <!-- 圖表：情緒分佈 + 月趨勢 -->
-  <div class="charts-2col">
-    <div class="chart-card">
-      <div class="chart-title">🥧 情緒分佈 <button class="hr-refresh" onclick="loadHrData()">🔄 重新整理</button></div>
-      <canvas id="chart-pie" height="220"></canvas>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">📈 每月使用趨勢</div>
-      <canvas id="chart-line" height="220"></canvas>
-    </div>
-  </div>
-
-  <!-- 推薦資源統計 -->
-  <div class="chart-card">
-    <div class="chart-title">🎯 各資源推薦次數統計</div>
-    <canvas id="chart-bar" height="160"></canvas>
-  </div>
-
-  <!-- 最近記錄表格 -->
-  <div class="tbl-wrap">
-    <table>
-      <thead><tr><th>時間</th><th>情緒</th><th>壓力指數</th><th>推薦資源</th></tr></thead>
-      <tbody id="hr-table-body">
-        <tr><td colspan="4" style="text-align:center;color:#bbb;padding:24px">載入中...</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="footer">HR 後台僅供 EAP 承辦人使用 · 數據去識別化，無法追溯個人身份</div>
-</div>
 
 <script>
 // ── 設定 ──
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyqze3UrOKma3Uq0A6rOqMyiUC7os3TREgsG8R-MB2BdK355UhLAxTcW-oOOGGu6nDeXg/exec';
 
 let mood = null;
-const HR_PASSWORD = 'cl3';
 
 // ── Gemini API ──
 const FIELD_KEYWORDS = /執勤|出勤|救災|火場|搶救|勤務|夜班|備勤|緊急救護|消防|火災|意外|現場|傷亡|燒|爆|災/;
@@ -720,33 +648,7 @@ function reset() {
 }
 
 // ── HR 後台 ──
-function openHrLogin() {
-  document.getElementById('hr-overlay').classList.add('show');
-  document.getElementById('hr-pw').value = '';
-  document.getElementById('hr-err').textContent = '';
-  setTimeout(() => document.getElementById('hr-pw').focus(), 50);
-}
-
-function closeHrLogin() {
-  document.getElementById('hr-overlay').classList.remove('show');
-}
-
-function hrLogin() {
-  const pw = document.getElementById('hr-pw').value;
-  if (pw === HR_PASSWORD) {
-    closeHrLogin();
-    window.location.href = 'dashboard.html';
-  } else {
-    const inp = document.getElementById('hr-pw');
-    document.getElementById('hr-err').textContent = '密碼錯誤，請重試';
-    inp.classList.add('err');
-    inp.value = '';
-    setTimeout(() => inp.classList.remove('err'), 400);
-  }
-}
-
 function goPage(p, btn) {
-  if (p === 'hr') { openHrLogin(); return; }
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-' + p).classList.add('active');
@@ -760,154 +662,8 @@ function pick(m, el) {
   mood = m;
 }
 
-// ── Chart.js 後台數據 ──
-let chartPie, chartLine, chartBar;
-
-const EMO_COLORS = {
-  '開心平靜': '#2d9554', '還好普通': '#1a5fa0',
-  '焦慮緊張': '#c8860a', '低落疲憊': '#5a3d9a', '憤怒壓抑': '#b83228',
-};
-
-async function loadHrData() {
-  const tbody = document.getElementById('hr-table-body');
-  tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:24px">載入中…</td></tr>';
-
-  try {
-    const res = await fetch(GAS_URL + '?t=' + Date.now());
-    const d = await res.json();
-
-    const { emotionCounts = {}, monthlyData = {}, resourceCounts = {}, total = 0, recentEmotions = [] } = d;
-
-    // KPI
-    document.getElementById('kpi-total').textContent = total;
-    const topEmo = Object.entries(emotionCounts).sort((a,b)=>b[1]-a[1])[0];
-    document.getElementById('kpi-top').textContent = topEmo ? topEmo[0] : '—';
-    const thisMonth = new Date().toISOString().slice(0,7);
-    document.getElementById('kpi-month').textContent = monthlyData[thisMonth] || 0;
-
-    // 平均壓力（如果試算表有的話，否則顯示 —）
-    document.getElementById('kpi-avg-stress').textContent = d.avgStress ? d.avgStress.toFixed(1) : '—';
-
-    // 警示
-    const alertEl = document.getElementById('hr-alert');
-    if (topEmo && (topEmo[0] === '低落疲憊' || topEmo[0] === '焦慮緊張' || topEmo[0] === '憤怒壓抑') && total > 0) {
-      alertEl.style.display = 'block';
-      alertEl.innerHTML = `<strong>⚠ 注意：</strong>目前最常見情緒為「${topEmo[0]}」（${topEmo[1]} 次），建議 EAP 承辦人適時啟動主動關懷流程。`;
-    } else {
-      alertEl.style.display = 'none';
-    }
-
-    renderPie(emotionCounts);
-    renderLine(monthlyData);
-    renderBar(resourceCounts);
-    renderTable(recentEmotions, d.recentRecords);
-
-  } catch (e) {
-    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#b83228;padding:24px">載入失敗：請確認 GAS 設定正確<br><small>${e.message}</small></td></tr>`;
-  }
-}
-
-function renderPie(emotionCounts) {
-  const labels = Object.keys(emotionCounts);
-  const values = Object.values(emotionCounts);
-  const colors = labels.map(l => EMO_COLORS[l] || '#aaa');
-
-  if (chartPie) chartPie.destroy();
-  chartPie = new Chart(document.getElementById('chart-pie'), {
-    type: 'doughnut',
-    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, usePointStyle: true } },
-        tooltip: { callbacks: { label: ctx => {
-          const t = ctx.dataset.data.reduce((a,b)=>a+b,0);
-          return ` ${ctx.label}：${ctx.parsed} 次（${t?Math.round(ctx.parsed/t*100):0}%）`;
-        }}}
-      },
-      cutout: '55%'
-    }
-  });
-}
-
-function renderLine(monthlyData) {
-  const entries = Object.entries(monthlyData).sort((a,b)=>a[0].localeCompare(b[0]));
-  if (entries.length > 1) {
-    const filled = [];
-    const cur = new Date(entries[0][0] + '-01');
-    const end = new Date(entries[entries.length-1][0] + '-01');
-    while (cur <= end) {
-      const k = cur.toISOString().slice(0,7);
-      filled.push([k, monthlyData[k] || 0]);
-      cur.setMonth(cur.getMonth()+1);
-    }
-    entries.length = 0; entries.push(...filled);
-  }
-
-  if (chartLine) chartLine.destroy();
-  const ctx = document.getElementById('chart-line').getContext('2d');
-  const grad = ctx.createLinearGradient(0,0,0,220);
-  grad.addColorStop(0, 'rgba(26,107,60,0.18)');
-  grad.addColorStop(1, 'rgba(26,107,60,0)');
-
-  chartLine = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: entries.map(([k])=>k.replace('-','/')),
-      datasets: [{ label:'使用次數', data: entries.map(([,v])=>v), borderColor:'#1a6b3c', backgroundColor: grad, borderWidth:2.5, pointBackgroundColor:'#1a6b3c', pointRadius:5, tension:0.4, fill:true }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display:false }, tooltip: { mode:'index', intersect:false } },
-      scales: {
-        x: { grid:{ color:'rgba(0,0,0,0.05)' }, ticks:{ font:{ size:11 } } },
-        y: { beginAtZero:true, grid:{ color:'rgba(0,0,0,0.05)' }, ticks:{ stepSize:1, font:{ size:11 } } }
-      }
-    }
-  });
-}
-
-function renderBar(resourceCounts) {
-  const entries = Object.entries(resourceCounts).sort((a,b)=>b[1]-a[1]).slice(0,10);
-  const palette = ['#2d9554','#1a5fa0','#c8860a','#5a3d9a','#b83228','#0891b2','#c05621','#1a6b3c','#7c3aed','#be185d'];
-
-  if (chartBar) chartBar.destroy();
-  chartBar = new Chart(document.getElementById('chart-bar'), {
-    type: 'bar',
-    data: {
-      labels: entries.map(([k])=>k),
-      datasets: [{ label:'推薦次數', data: entries.map(([,v])=>v), backgroundColor: palette.map(c=>c+'CC'), borderColor: palette, borderWidth:1.5, borderRadius:6 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend:{ display:false }, tooltip:{ callbacks:{ label: ctx => ` 推薦 ${ctx.parsed.y} 次` } } },
-      scales: {
-        x: { grid:{ display:false }, ticks:{ font:{ size:11 }, maxRotation:30 } },
-        y: { beginAtZero:true, grid:{ color:'rgba(0,0,0,0.05)' }, ticks:{ stepSize:1, font:{ size:11 } } }
-      }
-    }
-  });
-}
-
-function renderTable(recentEmotions, recentRecords) {
-  const tbody = document.getElementById('hr-table-body');
-  const rows = recentRecords || recentEmotions;
-  if (!rows || rows.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#bbb;padding:24px">尚無記錄</td></tr>';
-    return;
-  }
-  tbody.innerHTML = rows.map(r => {
-    const stressNum = parseInt(r.stress || r.stressLevel || 0);
-    const stressCls = stressNum >= 8 ? 's-hi' : stressNum >= 5 ? 's-md' : 's-lo';
-    const stressLabel = stressNum || '—';
-    return `<tr>
-      <td>${r.time || ''}</td>
-      <td>${r.emotion || ''}</td>
-      <td><span class="sbadge ${stressCls}">${stressLabel}</span></td>
-      <td style="font-size:11px;color:#888">${r.resources || r.resource || '—'}</td>
-    </tr>`;
-  }).join('');
-}
-</script>
+// 月份 key 統一成 YYYY-MM（本地時間）。GAS 把 Date 當物件 key 時會變成
+// "Fri May 01 2026 00:00:00 GMT+0800 (台北標準時間)" 這種形式
+async </script>
 </body>
 </html>
