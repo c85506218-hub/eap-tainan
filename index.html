@@ -288,6 +288,8 @@ tr:last-child td{border-bottom:none}
           <div class="eap-cs"><a href="https://www.facebook.com/share/p/1DuQayTHa6/" target="_blank" style="color:inherit;font-weight:700">謐時光心理諮商所</a><br>服務時間：平日 09:00–20:00<br>壓力檢測、減壓團體、個別諮商<br><strong>每人每年 6 次（可申請延長）</strong></div>
           <div class="eap-hl">
             服務專線：<span class="eap-phone"><a href="tel:033128327" style="color:inherit;text-decoration:none">03-3128327</a></span><br>
+            <a href="https://signflow.cc/form/fire-dept-expert-combined" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:#1a6b3c;color:#fff;font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;text-decoration:none">線上預約：個別諮商・壓力檢測</a><br>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfWsDA9vCJDT0u_3UaY8VSWYqEuSNPD6ncYO9-Gg9T7ZxVm8Q/viewform" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:#2d6ca8;color:#fff;font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;text-decoration:none">線上預約：團體諮商・減壓活動</a><br>
             <a href="https://www.facebook.com/share/p/1DuQayTHa6/" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:#06c755;color:#fff;font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;text-decoration:none">加入官方 LINE 直接預約</a><br>
             <span style="font-size:11px;color:#888;margin-top:4px;display:block">無需透過機關轉介，個人可直接申請</span>
           </div>
@@ -399,12 +401,12 @@ tr:last-child td{border-bottom:none}
         <div class="res-detail">員工協助方案含免費法律諮詢，費用全免</div>
         <span class="res-tag tag-green">前往申請 ↗</span>
       </a>
-      <div class="res-card" style="cursor:default">
+      <a class="res-card" href="tel:024128518">
         <div class="res-type">⚖️ 免費法律援助</div>
         <div class="res-name">法律扶助基金會</div>
-        <div class="res-detail">📞 412-8518，免費訴訟扶助</div>
-        <span class="res-tag tag-blue">詳詢 1966</span>
-      </div>
+        <div class="res-detail">📞 市話直撥 412-8518／手機請撥 02-412-8518，免費訴訟扶助</div>
+        <span class="res-tag tag-blue">點擊撥打</span>
+      </a>
       <a class="res-card" href="https://tnda.tainan.gov.tw/civilbook/page.asp?page=23" target="_blank">
         <div class="res-type">🏙 臺南市政府</div>
         <div class="res-name">臺南市免費法律諮詢</div>
@@ -498,7 +500,7 @@ const TOPIC_KEYWORDS = {
 const TOPIC_RES = {
   legal:[
     {icon:'🏛',type:'員工專屬',name:'EAP 法律諮詢服務',detail:'員工協助方案含免費法律諮詢，費用全免',tag:'tag-green',t:'前往申請',url:'https://personnel.tainan.gov.tw/eap/page224.aspx'},
-    {icon:'⚖️',type:'免費法律援助',name:'法律扶助基金會',detail:'412-8518，免費訴訟扶助',tag:'tag-blue',t:'查看詳情',url:'https://www.laf.org.tw/'},
+    {icon:'⚖️',type:'免費法律援助',name:'法律扶助基金會',detail:'市話 412-8518／手機 02-412-8518，免費訴訟扶助',tag:'tag-blue',t:'查看詳情',url:'https://www.laf.org.tw/'},
     {icon:'🏙',type:'臺南市政府',name:'臺南市免費法律諮詢',detail:'各區公所與永華市政中心時段表，現場登記每人 15 分鐘',tag:'tag-blue',t:'查看時段',url:'https://tnda.tainan.gov.tw/civilbook/page.asp?page=23'},
   ],
   care:[
@@ -514,28 +516,28 @@ const TOPIC_RES = {
 // 全部為真實存在的資源，不虛構
 // 規則式邏輯不會主動挑這些，但 AI 推薦時可以選（皆依消防署官方文件）
 const EXTRA_RES = [
-  {icon:'👥',type:'消防署專案',name:'謐時光減壓團體',detail:'每場 1.5 小時，3–10 人，每團至多 2 次，費用署方支應',tag:'tag-blue',t:'單位可申請',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+  {icon:'👥',type:'消防署專案',name:'謐時光減壓團體',detail:'每場 1.5 小時，3–10 人，每團至多 2 次，費用署方支應',tag:'tag-blue',t:'線上預約',url:'https://docs.google.com/forms/d/e/1FAIpQLSfWsDA9vCJDT0u_3UaY8VSWYqEuSNPD6ncYO9-Gg9T7ZxVm8Q/viewform'},
 ];
 
 const RES = {
   great:[
-    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告與建議，費用署方支應',tag:'tag-blue',t:'預防保健',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
-    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-gold',t:'主動申請',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告與建議，費用署方支應',tag:'tag-blue',t:'線上預約',url:'https://signflow.cc/form/fire-dept-expert-combined'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-gold',t:'線上預約',url:'https://signflow.cc/form/fire-dept-expert-combined'},
   ],
   ok:[
-    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告與建議，費用署方支應',tag:'tag-blue',t:'消防署專案',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'📋',type:'消防署專案',name:'壓力檢測（謐時光）',detail:'每人 2 次，含個別報告與建議，費用署方支應',tag:'tag-blue',t:'線上預約',url:'https://signflow.cc/form/fire-dept-expert-combined'},
     {icon:'📞',type:'即時支持',name:'1925 安心專線',detail:'24 小時免費，全年無休',tag:'tag-red',t:'點擊撥打',url:'tel:1925'},
   ],
   anxious:[
-    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-gold',t:'強烈建議',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-gold',t:'線上預約',url:'https://signflow.cc/form/fire-dept-expert-combined'},
     {icon:'📞',type:'即時支持',name:'1925 安心專線',detail:'24 小時免費，全年無休',tag:'tag-red',t:'點擊撥打',url:'tel:1925'},
   ],
   sad:[
-    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-purple',t:'優先推薦',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-purple',t:'線上預約',url:'https://signflow.cc/form/fire-dept-expert-combined'},
     {icon:'🏛',type:'本局 EAP',name:'人事室心理諮商轉介',detail:'每年 4 小時，完全保密，填具申請表',tag:'tag-red',t:'前往申請',url:'https://personnel.tainan.gov.tw/eap/index.aspx'},
   ],
   angry:[
-    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-red',t:'優先推薦',url:'https://www.facebook.com/photo/?fbid=1250514787262784&set=a.289111203403152'},
+    {icon:'🔥',type:'消防署專案',name:'謐時光個別諮商',detail:'每人每年 6 次（可申請延長），加官方 LINE 申請，平日 09:00–20:00',tag:'tag-red',t:'線上預約',url:'https://signflow.cc/form/fire-dept-expert-combined'},
     {icon:'📞',type:'外部資源',name:'張老師 1980',detail:'情緒輔導，週一至六，免費',tag:'tag-gold',t:'點擊撥打',url:'tel:1980'},
   ],
 };
