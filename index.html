@@ -417,6 +417,12 @@ tr:last-child td{border-bottom:none}
         <div class="res-detail">全市 37 區公所與永華市政中心時段表，現場登記每人 15 分鐘</div>
         <span class="res-tag tag-blue">查看時段 ↗</span>
       </a>
+      <a class="res-card" href="https://tnni.tainan.gov.tw/index.php?lang=cht&amp;temp=law" target="_blank">
+        <div class="res-type">🌏 新住民專區</div>
+        <div class="res-name">新住民法律諮詢服務</div>
+        <div class="res-detail">民政局新住民專區，介面支援越南、印尼、泰、緬、柬、馬來等多國語言</div>
+        <span class="res-tag tag-blue">查看資源 ↗</span>
+      </a>
     </div>
   </div>
 
@@ -497,6 +503,7 @@ const META = {
 
 // 主題關鍵字 → 對應真實資源（優先顯示）
 const TOPIC_KEYWORDS = {
+  newres:  /新住民|外籍|國籍|歸化|移民|居留|越南|印尼|泰國|緬甸|柬埔寨|馬來|菲律賓|跨國婚姻|外配|陸配/,
   legal:   /法律|訴訟|告訴|離婚|繼承|契約|債務|欠錢|法院|律師|法扶|糾紛|侵權|被告|起訴|調解|仲裁|官司|打官司|法律問題|民事|刑事|罰款|霸凌|職場霸凌|騷擾|歧視|申訴|投訴/,
   care:    /長照|照顧|失能|失智|老人|父母|長輩|看護|安養|照服員/,
   finance: /借錢|卡債|貸款|財務|欠款|還款|利息|負債|繳不起/,
@@ -506,10 +513,15 @@ const TOPIC_RES = {
     {icon:'🏛',type:'員工專屬',name:'EAP 法律諮詢服務',detail:'員工協助方案含免費法律諮詢，費用全免',tag:'tag-green',t:'前往申請',url:'https://personnel.tainan.gov.tw/eap/page224.aspx'},
     {icon:'⚖️',type:'免費法律援助',name:'法律扶助基金會',detail:'市話 412-8518／手機 02-412-8518，免費訴訟扶助',tag:'tag-blue',t:'查看詳情',url:'https://www.laf.org.tw/'},
     {icon:'🏙',type:'臺南市政府',name:'臺南市免費法律諮詢',detail:'各區公所與永華市政中心時段表，現場登記每人 15 分鐘',tag:'tag-blue',t:'查看時段',url:'https://tnda.tainan.gov.tw/civilbook/page.asp?page=23'},
+    {icon:'🌏',type:'新住民專區',name:'新住民法律諮詢服務',detail:'民政局新住民專區，支援越南、印尼、泰、緬、柬、馬來等多國語言',tag:'tag-blue',t:'查看資源',url:'https://tnni.tainan.gov.tw/index.php?lang=cht&temp=law'},
   ],
   care:[
     {icon:'👴',type:'長照服務',name:'1966 長照專線',detail:'長照資源諮詢，週一至五 08:30–17:30',tag:'tag-gold',t:'點擊撥打',url:'tel:1966'},
     {icon:'👪',type:'照顧者支持',name:'0800-507272 家庭關懷專線',detail:'家庭照顧者心理支持，週一至五 09:00–18:00',tag:'tag-green',t:'點擊撥打',url:'tel:0800507272'},
+  ],
+  newres:[
+    {icon:'🌏',type:'新住民專區',name:'新住民法律諮詢服務',detail:'民政局新住民專區，支援越南、印尼、泰、緬、柬、馬來等多國語言',tag:'tag-blue',t:'查看資源',url:'https://tnni.tainan.gov.tw/index.php?lang=cht&temp=law'},
+    {icon:'⚖️',type:'免費法律援助',name:'法律扶助基金會',detail:'市話 412-8518／手機 02-412-8518，免費訴訟扶助',tag:'tag-blue',t:'查看詳情',url:'https://www.laf.org.tw/'},
   ],
   finance:[
     {icon:'🤝',type:'福利諮詢',name:'1957 福利諮詢專線',detail:'社會救助與福利，每日 08:00–22:00',tag:'tag-green',t:'點擊撥打',url:'tel:1957'},
