@@ -566,7 +566,12 @@ async function analyze() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('result-wrap').style.display = 'none';
 
-  const ai = await callGemini(mood, txt, stress);
+  let ai = await callGemini(mood, txt, stress);
+  if (!ai.text && !(ai.picks || []).length) {
+    // Gemini 偶發回「high demand」等暫時性錯誤，等一下重試一次
+    await new Promise(r => setTimeout(r, 1500));
+    ai = await callGemini(mood, txt, stress);
+  }
   const aiText = ai.text;
 
   document.getElementById('loading').style.display = 'none';
@@ -583,21 +588,17 @@ async function analyze() {
 
   // AI 推薦：只接受白名單內的名稱，其餘丟棄
   const aiPicks = (ai.picks || []).map(n => ALL_RES[String(n).trim()]).filter(Boolean);
-  const byAI = aiPicks.length > 0;
 
-  // 主體清單：AI 有給就用 AI 的，否則退回原本的關鍵字比對
-  let base;
-  if (byAI) {
-    base = aiPicks;
-  } else {
-    const topicRes = [];
-    Object.entries(TOPIC_KEYWORDS).forEach(([topic, rx]) => {
-      if (txt && rx.test(txt)) topicRes.push(...(TOPIC_RES[topic] || []));
-    });
-    base = [...topicRes, ...(RES[mood] || [])];
-  }
+  // 關鍵字命中的主題資源（法律／長照／財務）優先——這類判斷交給規則比交給模型可靠
+  const topicRes = [];
+  Object.entries(TOPIC_KEYWORDS).forEach(([topic, rx]) => {
+    if (txt && rx.test(txt)) topicRes.push(...(TOPIC_RES[topic] || []));
+  });
 
-  // 危機關鍵字 → 24 小時專線「置頂補上」，不取代原本的推薦。這道規則不依賴模型判斷
+  // 混合：主題資源 → AI 推薦 → 情緒預設
+  let base = [...topicRes, ...aiPicks, ...(RES[mood] || [])];
+
+  // 危機關鍵字 → 24 小時專線置頂。這道規則不依賴模型判斷
   const CRISIS = /自殺|不想活|活不下去|撐不下去|不如死|結束生命|傷害自己|自我了結|死了算了|一了百了|沒有明天/;
   if (txt && CRISIS.test(txt) && ALL_RES['1925 安心專線']) {
     base = [ALL_RES['1925 安心專線'], ...base];
@@ -608,6 +609,9 @@ async function analyze() {
     if (seen.has(r.name)) return false;
     seen.add(r.name); return true;
   }).slice(0, 3);
+
+  // 只有當顯示出來的資源裡真的有 AI 挑的，標題才寫「AI 推薦」
+  const byAI = rr.some(r => aiPicks.indexOf(r) !== -1);
 
   const srDiv = document.getElementById('suggest-res');
   srDiv.innerHTML = rr.length
