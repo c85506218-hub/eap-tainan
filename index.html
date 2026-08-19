@@ -361,8 +361,11 @@ tr:last-child td{border-bottom:none}
     </div>
     <div style="background:var(--gray-light);border-radius:8px;padding:13px 15px;font-size:12px;color:var(--gray-mid);line-height:1.8">
       <strong>如何申請：</strong><br>
-      ① 個人申請：<a href="https://www.facebook.com/share/p/1DuQayTHa6/" target="_blank">加入謐時光官方 LINE</a> → 輸入姓名、填寫申請表單 → 媒合心理師<br>
-      ② 機關申請：由人事室以公文向消防署提出，情節急迫可先以電子郵件申請後補公文<br><br>
+      ① <strong>線上預約表單（最快，免加 LINE）</strong>：<br>
+      　　· 個別諮商・壓力檢測 → <a href="https://signflow.cc/form/fire-dept-expert-combined" target="_blank">預約表單 ↗</a><br>
+      　　· 團體諮商・減壓活動 → <a href="https://docs.google.com/forms/d/e/1FAIpQLSfWsDA9vCJDT0u_3UaY8VSWYqEuSNPD6ncYO9-Gg9T7ZxVm8Q/viewform" target="_blank">預約表單 ↗</a><br>
+      ② 個人申請（LINE）：<a href="https://www.facebook.com/share/p/1DuQayTHa6/" target="_blank">加入謐時光官方 LINE</a> → 輸入姓名、填寫申請表單 → 媒合心理師<br>
+      ③ 機關申請：由人事室以公文向消防署提出，情節急迫可先以電子郵件申請後補公文<br><br>
       <strong>聯絡窗口：</strong>消防署人事室劉小姐 <strong>02-81966526</strong> ｜ <a href="https://www.facebook.com/share/p/1DuQayTHa6/" target="_blank" style="color:inherit">謐時光心理諮商所</a> <strong>03-3128327</strong>（平日 09:00–20:00）
     </div>
   </div>
@@ -672,5 +675,37 @@ function pick(m, el) {
 // 月份 key 統一成 YYYY-MM（本地時間）。GAS 把 Date 當物件 key 時會變成
 // "Fri May 01 2026 00:00:00 GMT+0800 (台北標準時間)" 這種形式
 async </script>
+
+<script>
+// ── tel: 連結依裝置分流 ──────────────────────────────────────
+// 桌機沒有撥號程式，點 tel: 會跳出 Windows 的「選取應用程式」對話框，
+// 對使用者毫無幫助。因此只在觸控裝置保留 tel:；桌機改連官網，
+// 沒有官網的就取消連結、單純顯示號碼（號碼本來就印在卡片上）。
+(function () {
+  var isPhone = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (isPhone) return;
+
+  var WEB = {
+    'tel:024128518': 'https://www.laf.org.tw/',            // 法律扶助基金會
+    'tel:033128327': 'https://signflow.cc/form/fire-dept-expert-combined'  // 謐時光：改為線上預約
+  };
+
+  document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+    var href = a.getAttribute('href');
+    var alt = WEB[href];
+    var tag = a.querySelector('.res-tag');
+    if (alt) {
+      a.setAttribute('href', alt);
+      a.setAttribute('target', '_blank');
+      if (tag && tag.textContent.trim() === '點擊撥打') tag.textContent = '查看官網 ↗';
+    } else {
+      a.removeAttribute('href');
+      a.removeAttribute('target');
+      a.style.cursor = 'default';
+      if (tag && tag.textContent.trim() === '點擊撥打') tag.textContent = '電話撥打';
+    }
+  });
+})();
+</script>
 </body>
 </html>
