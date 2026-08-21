@@ -1082,10 +1082,6 @@ document.querySelectorAll('.footer').forEach(function (f) {
     hero.parentNode.insertBefore(box, hero.nextSibling);
   });
 
-  /* 頁尾那句也把 1925 標出來 */
-  document.querySelectorAll('.footer').forEach(function (f) {
-    f.innerHTML = f.innerHTML.replace(/(?<!>)1925(?!<)/, '<span class="hl-1925">1925</span>');
-  });
 })();
 </script>
 
@@ -1147,12 +1143,28 @@ document.querySelectorAll('.footer').forEach(function (f) {
 })();
 
 /* 免責聲明放大 */
-document.querySelectorAll('.footer').forEach(function (f) {
-  f.innerHTML = f.innerHTML.replace(
-    /AI 情緒分析僅供參考，不構成醫療診斷。/,
-    '<span class="disclaimer">⚠️ AI 情緒分析僅供參考，不構成醫療診斷。</span>'
-  );
-});
+(function () {
+  var PHRASE = 'AI 情緒分析僅供參考，不構成醫療診斷。';
+  document.querySelectorAll('.footer').forEach(function (f) {
+    if (f.querySelector('.disclaimer')) return;
+    var walker = document.createTreeWalker(f, NodeFilter.SHOW_TEXT, null);
+    var node, target = null;
+    while ((node = walker.nextNode())) {
+      if (node.nodeValue.indexOf(PHRASE) >= 0) { target = node; break; }
+    }
+    if (!target) return;
+    var txt = target.nodeValue;
+    var i = txt.indexOf(PHRASE);
+    var span = document.createElement('span');
+    span.className = 'disclaimer';
+    span.textContent = '⚠️ ' + PHRASE;
+    var parent = target.parentNode;
+    parent.insertBefore(document.createTextNode(txt.slice(0, i)), target);
+    parent.insertBefore(span, target);
+    parent.insertBefore(document.createTextNode(txt.slice(i + PHRASE.length)), target);
+    parent.removeChild(target);
+  });
+})();
 </script>
 </body>
 </html>
