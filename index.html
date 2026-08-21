@@ -374,6 +374,34 @@ textarea:focus, input:focus{
 .hero{position:relative;overflow:visible}
 @media(max-width:640px){ .mascot-hero{width:70px;right:6px} }
 
+
+/* ── 手機版 header：改成兩排，避免標題折行與副標被切 ── */
+@media(max-width:640px){
+  nav{
+    height:auto;flex-direction:column;align-items:stretch;
+    padding:9px 12px 0;gap:7px;
+  }
+  .nav-brand{gap:9px}
+  .nav-title{font-size:14.5px;line-height:1.25;white-space:nowrap}
+  .nav-sub{font-size:10.5px;line-height:1.3}
+  .nav-emblem{width:34px;height:34px;flex:0 0 34px}
+  .mascot-hd{width:34px;height:34px}
+  .nav-tabs{gap:4px;border-top:1px solid rgba(255,255,255,.16);padding-top:4px}
+  .nav-tab{
+    flex:1;text-align:center;padding:9px 4px;font-size:13px;
+    white-space:nowrap;border-radius:9px 9px 0 0;
+  }
+  .sos{padding:14px 15px;gap:11px}
+  .sos-btn{width:100%;justify-content:center}
+}
+
+/* ── 免責聲明放大 ── */
+.disclaimer{
+  display:block;max-width:540px;margin:10px auto 4px;
+  padding:9px 14px;font-size:13.5px;font-weight:600;line-height:1.7;
+  color:#6E6257;background:#fff;border:1px solid var(--gray-border);
+  border-radius:12px;
+}
 </style>
 </head>
 <body>
@@ -1092,6 +1120,39 @@ document.querySelectorAll('.footer').forEach(function (f) {
     hero.appendChild(i2);
   }
 })();
+</script>
+
+<script>
+/* 1925 橫幅改成只放第一頁，位置移到心情評估卡下面 */
+(function () {
+  document.querySelectorAll('.sos').forEach(function (el) { el.remove(); });
+
+  var page = document.getElementById('page-employee');
+  if (!page) return;
+  var moodBtn = page.querySelector('.mood-btn');
+  if (!moodBtn) return;
+  var card = moodBtn.closest('.card');
+  if (!card) return;
+
+  var isPhone = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  var box = document.createElement('div');
+  box.className = 'sos';
+  box.innerHTML =
+    '<div class="sos-ico">🆘</div>' +
+    '<div class="sos-txt"><b>現在就需要有人陪？</b>' +
+    '<span>1925 安心專線 24 小時免費、全年無休，不需要等到「夠嚴重」才能打。</span></div>' +
+    (isPhone ? '<a class="sos-btn" href="tel:1925">📞 撥打 1925</a>'
+             : '<span class="sos-btn" style="cursor:default">📞 1925</span>');
+  card.parentNode.insertBefore(box, card.nextSibling);
+})();
+
+/* 免責聲明放大 */
+document.querySelectorAll('.footer').forEach(function (f) {
+  f.innerHTML = f.innerHTML.replace(
+    /AI 情緒分析僅供參考，不構成醫療診斷。/,
+    '<span class="disclaimer">⚠️ AI 情緒分析僅供參考，不構成醫療診斷。</span>'
+  );
+});
 </script>
 </body>
 </html>
